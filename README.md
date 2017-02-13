@@ -1,4 +1,4 @@
-# graph-theory
+# Graph Theory Playground
 [![Build Status](https://travis-ci.com/lypnol/graph-theory.svg?token=cn7FeexYa7Y6ybrLsAwC&branch=master)](https://travis-ci.com/lypnol/graph-theory)
 
 Some graph theory algorithms with CI scoring
