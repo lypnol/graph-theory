@@ -24,7 +24,8 @@ class MyAwesomeSubmission(Submission):
         return output
 ```
 
-once your `run` function is completed, you can run `python main.py` to see your ranking.
+once your `run` function is completed, you can run `python main.py` to see your ranking.  
+You may need to run `pip install -r requirements.txt` first.
 
 ## How to add a problem
 Add a new folder `problem-[n+1]` with a README file and a `judge.py` file where you can specify how submissions could be validated and scored.  

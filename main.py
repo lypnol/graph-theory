@@ -3,6 +3,7 @@ import glob, sys, getopt, imp, inspect, datetime, re
 from os.path import splitext, basename
 from os import walk
 
+from tabulate import tabulate
 import functools
 import statistics
 import argparse
@@ -177,19 +178,16 @@ def run_submissions_for_problem(problem_path, n=0):
 
     print("Leaderboard")
     table = []
-    table.append("rank\tname\twins\tavg\tbest")
     for i, (name, wins, mean, best) in enumerate(leaderboard):
-        table.append("{yellow}{rank}{end}\t{blue}{name}{end}\t{green}{wins}{end}\t{mean:.2f}\t{best}".format(
-                yellow=bcolors.YELLOW,
-                blue=bcolors.BLUE,
-                green=bcolors.GREEN,
-                end=bcolors.ENDC,
-                rank=(i + 1),
-                name=name,
-                wins=wins,
-                best=best,
-                mean=mean))
-    print("\n".join(table))
+        table.append([
+            "{}{}{}".format(bcolors.YELLOW, (i + 1), bcolors.ENDC),
+            "{}{}{}".format(bcolors.BLUE, name, bcolors.ENDC),
+            "{}{}{}".format(bcolors.GREEN, wins, bcolors.ENDC),
+            "{:.2f}".format(mean),
+            "{}".format(best)])
+
+    headers = ["rank", "name", "wins", "avg", "best"]
+    print(tabulate(table, headers=headers))
 
     fails = sorted([
                     (name,
@@ -202,16 +200,15 @@ def run_submissions_for_problem(problem_path, n=0):
     if fails:
         print("\nFailed submissions")
         table = []
-        table.append("name\terrors\tavg\tbest")
         for name, errors, mean, best in fails:
-            table.append("{red}{name}\t{errors}\t{mean:.2f}\t{best}{end}".format(
-                    red=bcolors.RED,
-                    end=bcolors.ENDC,
-                    errors=errors,
-                    name=name,
-                    best=best,
-                    mean=mean))
-        print("\n".join(table))
+            table.append([
+                "{}{}{}".format(bcolors.RED, name, bcolors.ENDC),
+                "{}{}{}".format(bcolors.RED, errors, bcolors.ENDC),
+                "{}{:.2f}{}".format(bcolors.RED, mean, bcolors.ENDC),
+                "{}{}{}".format(bcolors.RED, best, bcolors.ENDC)])
+
+        headers = ["name", "errors", "avg", "best"]
+        print(tabulate(table, headers=headers))
 
 def main():
     global show_debug
