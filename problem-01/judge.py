@@ -42,7 +42,7 @@ class Problem01Judge(Judge):
 
         # Vérifier la connexité
         if not is_complete_path(graph, path, start):
-            return True
+            return False
 
         return True
 
