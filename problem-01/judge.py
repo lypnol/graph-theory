@@ -8,6 +8,11 @@ class Problem01Judge(Judge):
     def name(self):
         return "Problem-01 Judge"
 
+    def config(self):
+        return {
+            'default_inputs': 1000
+        }
+
     def generate_input(self):
         n = random.randint(8, 20)
         m = random.randint(10, 40)

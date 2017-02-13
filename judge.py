@@ -4,6 +4,11 @@ class Judge(object):
     def name(self):
         return 'Anonymous Judge'
 
+    def config(self):
+        return {
+            'default_inputs': 1
+        }
+
     def generate_input(self):
         pass
 

@@ -120,16 +120,19 @@ def run_submission_from_author(problem_path, author):
         return
     _run_submission(judge, submission, judge.generate_input())
 
-def run_submissions_for_problem(problem_path, n=1):
-    print("{magenta}{problem}    {number} test{prular}{end}".format(
+def run_submissions_for_problem(problem_path, n=0):
+    judge = _load_judge_for_problem(problem_path)
+    submissions = _load_submissions_for_problem(problem_path)
+
+    if not n:
+        n = judge.config()['default_inputs']
+
+    print("{magenta}{problem}    {number} test input{plural}{end}".format(
             problem=basename(problem_path),
             magenta=bcolors.MAGENTA,
             number=n,
-            prular=('s' if n > 1 else ''),
+            plural=('s' if n > 1 else ''),
             end=bcolors.ENDC))
-
-    judge = _load_judge_for_problem(problem_path)
-    submissions = _load_submissions_for_problem(problem_path)
 
     inputs = []
     for _ in range(n):
@@ -217,7 +220,7 @@ def main():
     parser.add_argument("-v", "--verbose", help="Enable debug mode", action="store_true")
     parser.add_argument("-p", "--problem", help="Runs judge system on specific problem", type=int)
     parser.add_argument("-a", "--author", help="Runs submissions from specific author", type=str)
-    parser.add_argument("-i", "--inputs", help="Number of generated inputs", type=int, default=1)
+    parser.add_argument("-i", "--inputs", help="Number of generated inputs", type=int, default=0)
     args = parser.parse_args()
 
     show_debug = args.verbose
