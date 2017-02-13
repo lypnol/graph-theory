@@ -2,10 +2,10 @@ from submission import Submission
 import random
 
 
-class CocoSubmission(Submission):
+class CocoBfsSubmission(Submission):
 
     def author(self):
-        return 'coco'
+        return 'coco-bfs'
 
     def run(self, input):
 
