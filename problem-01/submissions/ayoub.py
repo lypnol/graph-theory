@@ -1,6 +1,6 @@
 from submission import Submission
 import random
-
+import networkx as nx
 
 class AyoubSubmission(Submission):
 
@@ -26,7 +26,7 @@ class AyoubSubmission(Submission):
 
         # noeud de départ
         s = start
-        if not start:
+        if start is None:
             s = random.choice(S)
 
         # Cette variable servira à savoir si on se dirige vers un noeud connu
