@@ -2,10 +2,10 @@ from submission import Submission
 import collections
 import random
 
-class JonSubmission(Submission):
+class JonGreedySubmission(Submission):
 
     def author(self):
-        return 'jon'
+        return 'jon-greedy'
 
     def run(self, input):
 
@@ -37,6 +37,9 @@ class JonSubmission(Submission):
             def travel_path(self):
                 return list(self._history)
 
+            def graph(self):
+                return self._graph
+
         class ShuffledTraveler(Traveler):
 
             def __init__(self, graph, start_point):
@@ -47,30 +50,41 @@ class JonSubmission(Submission):
                 random.shuffle(l)
                 return l
 
-        def connected_component_using_shorter_dfs(traveler):
+        def connected_component_greedy(traveler):
+            graph = traveler.graph() # This could be replaced by a pre-exploration of the graph
             visited = {traveler.current()}
-            found = set(traveler.possibilities())
-            found.add(traveler.current())
-            path = [] # Path to the starting point
-            while len(visited) < len(found):
-                new_found = False
-                for node in traveler.possibilities():
-                    # Ignore already visited nodes to avoid loops !
-                    if node not in visited:
-                        path.append(traveler.current())
-                        traveler.goto(node)
-                        new_found = True
+            while True:
+                # Find nearest unvisited node
+                next_to_visit = None
+                explored = set()
+                to_explore = collections.deque()
+                to_explore.append(traveler.current())
+                parent = dict()
+                while len(to_explore) > 0:
+                    current = to_explore.popleft()
+                    explored.add(current)
+                    if current not in visited:
+                        next_to_visit = current
                         break
-                if not new_found:
-                    if len(path) > 0:
-                        traveler.goto(path.pop())
-                    else:
-                        break
+                    for successor in graph[current]:
+                        if successor not in explored and successor not in to_explore:
+                            to_explore.append(successor)
+                            parent[successor] = current
+                if next_to_visit == None:
+                    break
+
+                # Find path to go to next_to_visit, using parent dict
+                path = [next_to_visit]
+                while parent[path[-1]] != traveler.current():
+                    path.append(parent[path[-1]])
+                # Follow the path
+                while len(path) > 0:
+                    traveler.goto(path.pop())
+
                 visited.add(traveler.current())
-                found.update(traveler.possibilities())
             return visited
 
         graph, start = input
         traveler = ShuffledTraveler(graph, start)
-        connected_component_using_shorter_dfs(traveler)
+        connected_component_greedy(traveler)
         return traveler.travel_path()
