@@ -1,8 +1,5 @@
 from submission import Submission
 
-class InfiniteLoop(Exception):
-    pass
-
 class DavidSubmission(Submission):
 
     def author(self):
@@ -28,24 +25,14 @@ class DavidSubmission(Submission):
         # histoire d'immutable toussa
         to_visit = [x for x in graph[pos]]
 
-        i = 0
-
         # les choses serieuses commencent
         while len(to_visit) > 0:
-
-            i+=1
-            if i >= 1000:
-                raise InfiniteLoop()
 
             next_pos = to_visit[0]
             # on veut visiter next_pos
             # comment y aller ?
 
-            j = 0
             while next_pos not in graph[pos]:
-                j += 1
-                if j >= 10:
-                    raise InfiniteLoop()
 
                 pos = routes[pos] # on fait marche arrière
                 path.append(pos)
