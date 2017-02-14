@@ -2,10 +2,10 @@ from submission import Submission
 import random
 
 
-class CocoDFSSubmission(Submission):
+class CocoDfsSubmission(Submission):
 
     def author(self):
-        return 'coco-bfs'
+        return 'coco-dfs'
 
     def run(self, input):
 
@@ -27,7 +27,7 @@ class CocoDFSSubmission(Submission):
                     self.position = point
                     self.path.append(point)
 
-        def better_dfs(graph, start=None):
+        def better_bfs(graph, start=None):
             player = ShufflePlayer(graph, position=start)
             previous_nodes = []
             visited = set()
@@ -54,4 +54,4 @@ class CocoDFSSubmission(Submission):
 
         graph, start = input
 
-        return better_dfs(graph, start)
+        return better_bfs(graph, start)
