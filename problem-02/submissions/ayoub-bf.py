@@ -2,7 +2,7 @@ from submission import Submission
 from itertools import permutations
 
 
-class AyoubSubmission(Submission):
+class AyoubBFSubmission(Submission):
 
     def author(self):
         return 'ayoub-bf'

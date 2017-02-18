@@ -3,6 +3,7 @@ import glob, sys, getopt, imp, inspect, datetime, re
 from os.path import splitext, basename
 from os import walk
 import time
+import signal
 
 from tabulate import tabulate
 import functools
@@ -80,25 +81,45 @@ def _load_submissions_for_problem(problem_path):
             submissions.append(submission)
     return submissions
 
+class SubmissionTimeoutException(Exception): pass
+
+def _timeout_handler(signum, frame):
+    raise SubmissionTimeoutException
+
 def _run_submission(judge, submission, input):
     starttime = time.time()
-    output = submission.run(input)
-    runtime = time.time() - starttime
 
-    author = submission.author()
-    if not judge.validate(input, output):
-        print("{red}[{judgename}] invalid solution from {author}. {end}".format(
+    signal.signal(signal.SIGALRM, _timeout_handler)
+    signal.alarm(judge.config()['timeout'])
+
+    output = None
+    try:
+        output = submission.run(input)
+    except SubmissionTimeoutException:
+        print("{red}[{judgename}] timed out submission from {author}. {end}".format(
                 judgename=judge.name(),
                 red=bcolors.RED,
                 end=bcolors.ENDC,
                 author=author))
+
+    runtime = time.time() - starttime
+
+    author = submission.author()
+    if not judge.validate(input, output):
+        print("{red}[{judgename}] invalid solution from {author}. {end}\n{output}".format(
+                judgename=judge.name(),
+                red=bcolors.RED,
+                end=bcolors.ENDC,
+                author=author,
+                output=output))
     else:
-        print("{green}[{judgename}] {author} score: {score}{end}".format(
+        print("{green}[{judgename}] {author} score: {score}{end}\n{output}".format(
                 judgename=judge.name(),
                 green=bcolors.GREEN,
                 score=judge.score(input, output, runtime),
                 end=bcolors.ENDC,
-                author=author))
+                author=author,
+                output=output))
 
     if show_debug:
         if len(submission.get_debug_stack()) > 0:
@@ -151,13 +172,25 @@ def run_submissions_for_problem(problem_path, n=0):
         'best': None
         } for submission in submissions}
 
+    judge_options = judge.config()
+
     for input in inputs:
         best_score = None
         for submission in submissions:
             name = submission.author()
 
             starttime = time.time()
-            output = submission.run(input)
+
+            signal.signal(signal.SIGALRM, _timeout_handler)
+            signal.alarm(judge_options['timeout'])
+
+            output = None
+            try:
+                output = submission.run(input)
+            except SubmissionTimeoutException:
+                results[name]['errors'] += 1
+                continue
+
             runtime = time.time() - starttime
 
             if not judge.validate(input, output):
@@ -180,7 +213,7 @@ def run_submissions_for_problem(problem_path, n=0):
     leaderboard = sorted([
                     (name,
                     results[name]['wins'],
-                    statistics.mean(results[name]['scores']),
+                    statistics.mean(results[name]['scores'] or [0]),
                     results[name]['best'])
                     for name in results if results[name]['errors'] == 0],
                     key=lambda x: x[1], reverse=True)
@@ -201,7 +234,7 @@ def run_submissions_for_problem(problem_path, n=0):
     fails = sorted([
                     (name,
                     results[name]['errors'],
-                    statistics.mean(results[name]['scores']),
+                    statistics.mean(results[name]['scores'] or [0]),
                     results[name]['best'])
                     for name in results if results[name]['errors'] > 0],
                     key=lambda x: x[1])

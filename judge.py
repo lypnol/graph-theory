@@ -6,7 +6,8 @@ class Judge(object):
 
     def config(self):
         return {
-            'default_inputs': 1
+            'default_inputs': 1,
+            'timeout': 1
         }
 
     def generate_input(self):

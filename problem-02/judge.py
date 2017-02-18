@@ -42,11 +42,12 @@ class Problem02Judge(Judge):
 
     def config(self):
         return {
-            'default_inputs': 100
+            'default_inputs': 100,
+            'timeout': 1
         }
 
     def generate_input(self):
-        n = 6
+        n = 7
         m = [[random.randint(1, 100) if i != j else 0 for j in range(n)] for i in range(n)]
         for i in range(n):
             for j in range(n):

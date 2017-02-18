@@ -10,7 +10,8 @@ class Problem01Judge(Judge):
 
     def config(self):
         return {
-            'default_inputs': 1000
+            'default_inputs': 1000,
+            'timeout': 1
         }
 
     def generate_input(self):
