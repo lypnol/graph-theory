@@ -2,6 +2,7 @@
 import glob, sys, getopt, imp, inspect, datetime, re
 from os.path import splitext, basename
 from os import walk
+import time
 
 from tabulate import tabulate
 import functools
@@ -80,8 +81,12 @@ def _load_submissions_for_problem(problem_path):
     return submissions
 
 def _run_submission(judge, submission, input):
-    result, author = submission.run(input), submission.author()
-    if not judge.validate(input, result):
+    starttime = time.time()
+    output = submission.run(input)
+    runtime = time.time() - starttime
+
+    author = submission.author()
+    if not judge.validate(input, output):
         print("{red}[{judgename}] invalid solution from {author}. {end}".format(
                 judgename=judge.name(),
                 red=bcolors.RED,
@@ -91,7 +96,7 @@ def _run_submission(judge, submission, input):
         print("{green}[{judgename}] {author} score: {score}{end}".format(
                 judgename=judge.name(),
                 green=bcolors.GREEN,
-                score=judge.score(input, result),
+                score=judge.score(input, output, runtime),
                 end=bcolors.ENDC,
                 author=author))
 
@@ -149,12 +154,16 @@ def run_submissions_for_problem(problem_path, n=0):
     for input in inputs:
         best_score = None
         for submission in submissions:
-            output = submission.run(input)
             name = submission.author()
+
+            starttime = time.time()
+            output = submission.run(input)
+            runtime = time.time() - starttime
+
             if not judge.validate(input, output):
                 results[name]['errors'] += 1
             else:
-                score = judge.score(input, output)
+                score = judge.score(input, output, runtime)
                 results[name]['scores'].append(score)
                 if best_score is None or judge.compare(score, best_score) >= 0:
                     best_score = score

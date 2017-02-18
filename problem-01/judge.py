@@ -47,7 +47,7 @@ class Problem01Judge(Judge):
         return True
 
 
-    def score(self, input, output):
+    def score(self, input, output, runtime):
         return len(output)
 
     def compare(self, a, b):

@@ -45,11 +45,11 @@ class MyAwesomeProblem(Judge):
         ...
 
     def validate(self, input, output):
-        # Validates a submission output
+        # Validates a submission
         # should return a boolean
         ...
 
-    def score(self, input, output):
+    def score(self, input, output, runtime):
         # Scores a submission
         # should return a number
         ...

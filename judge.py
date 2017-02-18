@@ -15,7 +15,7 @@ class Judge(object):
     def validate(self, input, output):
         pass
 
-    def score(self, input, output):
+    def score(self, input, output, runtime):
         pass
 
     def compare(self, a, b):
