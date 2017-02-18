@@ -1,4 +1,4 @@
-# Travelling salesmann problem
+# Travelling salesman problem
 Let `G` be an undirected connected graph. Given a starting node `s`, what is the shortest path to visit all other nodes and get back to `s`.
 
 ## Input format
