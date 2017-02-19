@@ -22,8 +22,8 @@ class Problem03Judge(Judge):
                 if i == j:
                     matrix[i][j] = 0
                 else:
-                    matrix[i][j] = randint(0, 50)
-                    matrix[j][i] = randint(0, 50)
+                    matrix[i][j] = randint(0, 100)
+                    matrix[j][i] = randint(0, 100)
         return matrix
 
     def generate_input(self, size=50):
