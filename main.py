@@ -54,7 +54,7 @@ def _load_judge_for_problem(problem_path):
 
     classes = inspect.getmembers(judge_module, inspect.isclass)
     for _, cls_judge in classes[1:]:
-        if issubclass(cls_judge, Judge):
+        if issubclass(cls_judge, Judge) and not cls_judge == Judge:
             return cls_judge()
 
     return None
