@@ -12,7 +12,7 @@ class Problem03Judge(Judge):
         return {
             'default_inputs': 10,
             'input_sizes': [50, 100, 150],
-            'timeout': 2
+            'timeout': 3
         }
 
     def random_matrix(self, n):
