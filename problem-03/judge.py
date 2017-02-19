@@ -11,6 +11,7 @@ class Problem03Judge(Judge):
     def config(self):
         return {
             'default_inputs': 10,
+            'input_sizes': [10, 50, 100],
             'timeout': 1
         }
 
@@ -25,8 +26,8 @@ class Problem03Judge(Judge):
                     matrix[j][i] = randint(0, 50)
         return matrix
 
-    def generate_input(self):
-        return self.random_matrix(50)
+    def generate_input(self, size=50):
+        return self.random_matrix(size)
 
     def validate(self, input, output):
         return Counter(output) == Counter(input.keys())

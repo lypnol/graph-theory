@@ -151,66 +151,80 @@ def run_submissions_for_problem(problem_path, n=0):
     judge = _load_judge_for_problem(problem_path)
     submissions = _load_submissions_for_problem(problem_path)
 
+    config = judge.config()
     if not n:
-        n = judge.config()['default_inputs']
+        n = config['default_inputs']
 
-    print("{magenta}{problem}    {number} test input{plural}{end}".format(
+    print("\n{magenta}{problem}    {number} test input{plural}{end}".format(
             problem=basename(problem_path),
             magenta=bcolors.MAGENTA,
             number=n,
             plural=('s' if n > 1 else ''),
             end=bcolors.ENDC))
 
-    inputs = []
-    for _ in range(n):
-        inputs.append(judge.generate_input())
+    if 'input_sizes' in config:
+        input_sizes = config['input_sizes']
+    else:
+        input_sizes = [None]
 
-    results = {submission.author(): {
-        'wins': 0,
-        'scores': [],
-        'errors': 0,
-        'best': None
-        } for submission in submissions}
-
-    judge_options = judge.config()
-
-    for input in inputs:
-        best_score = None
-        for submission in submissions:
-            name = submission.author()
-
-            starttime = time.time()
-
-            signal.signal(signal.SIGALRM, _timeout_handler)
-            signal.alarm(judge_options['timeout'])
-
-            output = None
-            try:
-                output = submission.run(input)
-            except SubmissionTimeoutException:
-                results[name]['errors'] += 1
-                continue
-
-            runtime = time.time() - starttime
-
-            if not judge.validate(input, output):
-                results[name]['errors'] += 1
+    for size in input_sizes:
+        print("{magenta}Input size : {size}{end}".format(
+                size=size or "default",
+                magenta=bcolors.MAGENTA,
+                end=bcolors.ENDC))
+        inputs = []
+        for _ in range(n):
+            if size:
+                inputs.append(judge.generate_input(size))
             else:
-                score = judge.score(input, output, runtime)
-                results[name]['scores'].append(score)
-                if best_score is None or judge.compare(score, best_score) >= 0:
-                    best_score = score
+                inputs.append(judge.generate_input())
 
-                if results[name]['best'] is None or judge.compare(score, results[name]['best']) >= 0:
-                    results[name]['best'] = score
+        results = {submission.author(): {
+            'wins': 0,
+            'scores': [],
+            'errors': 0,
+            'best': None
+            } for submission in submissions}
 
-        for name in results:
-            if results[name]['scores']:
-                score = results[name]['scores'][-1]
-                if score == best_score:
-                    results[name]['wins'] += 1
+        judge_options = judge.config()
 
-    print_results(results)
+        for input in inputs:
+            best_score = None
+            for submission in submissions:
+                name = submission.author()
+
+                starttime = time.time()
+
+                signal.signal(signal.SIGALRM, _timeout_handler)
+                signal.alarm(judge_options['timeout'])
+
+                output = None
+                try:
+                    output = submission.run(input)
+                except SubmissionTimeoutException:
+                    results[name]['errors'] += 1
+                    continue
+
+                runtime = time.time() - starttime
+
+                if not judge.validate(input, output):
+                    results[name]['errors'] += 1
+                else:
+                    score = judge.score(input, output, runtime)
+                    results[name]['scores'].append(score)
+                    if best_score is None or judge.compare(score, best_score) >= 0:
+                        best_score = score
+
+                    if results[name]['best'] is None or judge.compare(score, results[name]['best']) >= 0:
+                        results[name]['best'] = score
+
+            for name in results:
+                if results[name]['scores']:
+                    score = results[name]['scores'][-1]
+                    if score == best_score:
+                        results[name]['wins'] += 1
+
+        print_results(results)
 
 
 def print_results(results):
@@ -222,7 +236,6 @@ def print_results(results):
                     for name in results if results[name]['errors'] == 0],
                     key=lambda x: x[1], reverse=True)
 
-    print("Leaderboard")
     table = []
     for i, (name, wins, mean, best) in enumerate(leaderboard):
         table.append([
