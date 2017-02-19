@@ -9,7 +9,6 @@ class DavidNGSubmission(Submission):
 
     def run(self, input):
         graph, start = input
-        print("graph", graph, "| start", start)
 
         # path est le chemin que l'on parcourt
         path = [start]
