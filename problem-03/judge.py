@@ -11,8 +11,8 @@ class Problem03Judge(Judge):
     def config(self):
         return {
             'default_inputs': 10,
-            'input_sizes': [10, 50, 100],
-            'timeout': 1
+            'input_sizes': [50, 100, 150],
+            'timeout': 2
         }
 
     def random_matrix(self, n):
