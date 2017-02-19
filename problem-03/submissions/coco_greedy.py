@@ -32,7 +32,7 @@ def glouton(graphe, depart=None):
     return circuit, calculate_length(circuit, graphe)
 
 
-class CocoGloutonSubmission(Submission):
+class CocoGreedySubmission(Submission):
 
     def author(self):
         return "coco-greedy"
