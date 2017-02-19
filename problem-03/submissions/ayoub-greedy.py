@@ -1,13 +1,13 @@
 from submission import Submission
 
 
-class AyoubGreedySubmission(Submission):
+class AyoubSubmission(Submission):
 
     def author(self):
-        return 'ayoub-greedy'
+        return 'ayoub'
 
     def run(self, input):
-        graph, start = input
+        graph = input
 
         def closest(current, exceptions=set()):
             m = float('inf')
@@ -28,32 +28,33 @@ class AyoubGreedySubmission(Submission):
             right = closest(current, visited)
             visited.add(right)
 
-            while left and right:
-                path.append(right)
-                path.insert(0, left)
+            while (left is not None) or (right is not None):
+                if left is not None:
+                    path.insert(0, left)
+                if right is not None:
+                    path.append(right)
 
-                left = closest(left, visited)
-                if not left:
-                    break
-                visited.add(left)
+                if left is not None:
+                    left = closest(left, visited)
+                    visited.add(left)
 
-                right = closest(right, visited)
-                if not right:
-                    break
-                visited.add(right)
+                if right is not None:
+                    right = closest(right, visited)
+                    visited.add(right)
 
-            d = path.index(start)
-            n = len(path)
-
-            return [path[(i + d) % n] for i in range(n)] + [start]
+            return path
 
         min_l = float('inf')
-        min_p = None
+        min_p = []
         for s in graph:
             path = traversal(s)
             l = sum([graph[path[i]][path[i+1]] for i in range(len(path) - 1)])
             if l < min_l:
                 min_l = l
-                min_p = path
+                min_p = [path]
+            elif l == min_l:
+                min_p.append(path)
 
-        return min_p
+        min_p = sorted(min_p, key=lambda x: len(x))
+
+        return min_p[0]
