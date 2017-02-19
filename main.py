@@ -210,6 +210,10 @@ def run_submissions_for_problem(problem_path, n=0):
                 if score == best_score:
                     results[name]['wins'] += 1
 
+    print_results(results)
+
+
+def print_results(results):
     leaderboard = sorted([
                     (name,
                     results[name]['wins'],
