@@ -51,7 +51,6 @@ def opt_two_all(matrix, time_limit = 1.8):
             iterations += 1
             if iterations % 20 == 0:
                 if time.time() - start > time_limit:
-                    print("time exceeded", iterations, improvements)
                     return solution, length
             elt1, elt2 = random.choice(perms)
             perms.remove((elt1, elt2))
