@@ -36,7 +36,7 @@ def glouton_all_starts(graphe):
     best_s = min([glouton(graphe, depart=s) for s in sommets], key=lambda x: x[1])
     return best_s
 
-def opt_two_all(matrix, time_limit = 1.8):
+def opt_two_all(matrix, time_limit = 2.8):
     solution, length = glouton_all_starts(matrix)
     start = time.time()
     iterations = 0

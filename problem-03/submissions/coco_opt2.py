@@ -67,7 +67,7 @@ def opt_two(matrix, time_limit = 1.5):
 class CocoOpt2(Submission):
 
     def author(self):
-        return "coco-opt-2"
+        return "coco-opt-2-lame"
 
     def run(self, input):
         path, length = opt_two(input)
