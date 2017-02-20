@@ -12,7 +12,7 @@ class David2Submission(Submission):
     def run(self, graph):
         DEPTH = 2
 
-        def length(graph, path):
+        def length(path):
             """
             return length of the given path
             """
@@ -27,12 +27,11 @@ class David2Submission(Submission):
         # path contient le chemin parcouru
         path = []
 
-        # on y va en glouton un peu plus malin
         # boucle principale : tant qu'il reste des noeuds à visiter
         while len(path) < nb_nodes:
 
             p = permutations(to_visit, r=min(len(to_visit), DEPTH))
-            subpath = list(min(p, key=lambda _path: length(graph, path + list(_path))))
+            subpath = list(min(p, key=lambda _path: length(path + list(_path))))
             to_visit = to_visit - set(subpath)
             path += subpath
 
