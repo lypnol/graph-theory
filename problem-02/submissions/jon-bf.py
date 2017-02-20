@@ -6,7 +6,8 @@ class JonBfSubmission(Submission):
         return 'jon-bf'
 
     def run(self, input):
-        graph, start = input
+        graph = input
+        start = list(graph.keys())[0]
 
         def length_of_path(path, wgraph):
             return sum(wgraph[path[i]][path[i+1]] for i in range(len(path)-1))

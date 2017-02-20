@@ -66,5 +66,5 @@ class CocoBacktracking(Submission):
         return "coco-backtracking"
 
     def run(self, input):
-        matrix, depart = input
-        return tsp_backtracking_rec(matrix, depart)
+        matrix = input
+        return tsp_backtracking_rec(matrix)

@@ -10,32 +10,27 @@ class Problem02Judge(Judge):
         self._solved = []
 
     def _eq(self, inp1, inp2):
-        g1, s1 = inp1
-        g2, s2 = inp2
+        g1 = inp1
+        g2 = inp2
         for x in g1:
             for y in g1:
                 if g1[x][y] != g2[x][y]:
                     return False
-        return s1 == s2
+        return True
 
     def _solve(self, input):
         for i, o in self._solved:
             if self._eq(input, i):
                 return o
-        g, s = input
+        g = input
+        s = list(g.keys())[0]
 
-        shortests = []
         min_length = float('inf')
         for p in permutations([x for x in g.keys() if x != s]):
             l = g[p[0]][s] + sum([g[p[i]][p[i+1]] for i in range(len(p) - 1)]) + g[p[-1]][s]
-            if l < min_length:
-                min_length = l
-                shortests = [[s] + list(p) + [s]]
-            elif l == min_length:
-                min_length = l
-                shortests.append([s] + list(p) + [s])
+            min_length = min(min_length, l)
 
-        return shortests
+        return min_length
 
     def name(self):
         return "Problem-02 Judge"
@@ -54,17 +49,11 @@ class Problem02Judge(Judge):
                 m[i][j] = m[j][i]
 
         g = {(x+1): {(y+1): m[x][y] for y in range(n)} for x in range(n)}
-        return g, random.randint(1, n)
+        return g
 
     def validate(self, input, output):
-        possible = self._solve(input)
-
-        for p in possible:
-            if tuple(output) == tuple(p):
-                return True
-
-        return False
-
+        length = self._solve(input)
+        return sum([input[output[i]][output[i+1]] for i in range(len(output) - 1)]) == length
 
     def score(self, input, output, runtime):
         return runtime * 100000

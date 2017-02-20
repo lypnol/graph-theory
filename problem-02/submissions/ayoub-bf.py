@@ -8,7 +8,9 @@ class AyoubBFSubmission(Submission):
         return 'ayoub-bf'
 
     def run(self, input):
-        g, s = input
+        g = input
+
+        s = list(g.keys())[0]
 
         shortest = []
         min_length = float('inf')
