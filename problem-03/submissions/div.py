@@ -6,7 +6,7 @@ class DavidSubmission(Submission):
         return 'div'
 
 
-    def run(self, input):
+    def run(self, graph):
 
         def run_from_start(graph, start):
             """
@@ -35,13 +35,14 @@ class DavidSubmission(Submission):
 
             return path
 
-        def length(graph, path):
+        def length(path):
             """
-            return length of the given path
+            return length of the path (extended to a circular one)
             """
-            return sum(graph[x][y] for x,y in zip(path, path[1:]))
+            # si l = [1,2,3]
+            # zip(l, l[1:]) = [(1,2), (2,3)]
+            return sum(graph[x][y] for x,y in zip(path, path[1:])) + graph[path[-1]][path[0]]
 
 
-        graph = input
         nodes = graph.keys()
-        return max((run_from_start(graph, x) for x in nodes), key=lambda path: length(graph, path))
+        return min((run_from_start(graph, x) for x in nodes), key=length )
