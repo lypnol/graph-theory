@@ -9,52 +9,33 @@ class AyoubSubmission(Submission):
     def run(self, input):
         graph = input
 
-        def closest(current, exceptions=set()):
-            m = float('inf')
-            c = None
-            for v in graph[current]:
-                if v not in exceptions and graph[current][v] < m:
-                    m = graph[current][v]
-                    c = v
-            return c
+        def calc_length(p):
+            s = 0
+            for i in range(len(p)):
+                s += graph[p[i]][p[(i+1) % len(p)]]
+            return s
 
-        def traversal(s):
-            path = [s]
+        min_path = []
+        min_len = float('inf')
+        for s in graph:
             current = s
             visited = { s }
+            path = [s]
+            while len(visited) != len(graph):
+                m = float('inf')
+                n = None
+                for v in graph[current]:
+                    if v not in visited and graph[current][v] < m:
+                        m = graph[current][v]
+                        n = v
 
-            left = closest(current, visited)
-            visited.add(left)
-            right = closest(current, visited)
-            visited.add(right)
+                current = n
+                path.append(current)
+                visited.add(current)
 
-            while (left is not None) or (right is not None):
-                if left is not None:
-                    path.insert(0, left)
-                if right is not None:
-                    path.append(right)
+            l = calc_length(path)
+            if l < min_len:
+                min_len = l
+                min_path = path
 
-                if left is not None:
-                    left = closest(left, visited)
-                    visited.add(left)
-
-                if right is not None:
-                    right = closest(right, visited)
-                    visited.add(right)
-
-            return path
-
-        min_l = float('inf')
-        min_p = []
-        for s in graph:
-            path = traversal(s)
-            l = sum([graph[path[i]][path[i+1]] for i in range(len(path) - 1)])
-            if l < min_l:
-                min_l = l
-                min_p = [path]
-            elif l == min_l:
-                min_p.append(path)
-
-        min_p = sorted(min_p, key=lambda x: len(x))
-
-        return min_p[0]
+        return min_path
