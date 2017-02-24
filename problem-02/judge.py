@@ -42,7 +42,7 @@ class Problem02Judge(Judge):
         }
 
     def generate_input(self):
-        n = 7
+        n = 8
         m = [[random.randint(1, 100) if i != j else 0 for j in range(n)] for i in range(n)]
         for i in range(n):
             for j in range(n):
@@ -56,7 +56,7 @@ class Problem02Judge(Judge):
         return sum([input[output[i]][output[i+1]] for i in range(len(output) - 1)]) == length
 
     def score(self, input, output, runtime):
-        return runtime * 100000
+        return runtime * 1000
 
     def compare(self, a, b):
         if a > b:
